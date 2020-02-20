@@ -1,59 +1,54 @@
 <template>
   <div class="main">
-    <div class="top">
-    <!-- <button @click.prevent="submit" class="btn btn-a">Get the Users' List</button> -->
-    </div>
-
     <div class="content">
-      <h4>User List</h4>
-      <ul> 
-        <!-- userInfos -->
-        <li>{{name}}</li>
-        <li>{{username}}</li>
-        <li>{{mail}}</li>
-        <li>{{phone}}</li>
-        <li>{{website}}</li>
-      </ul>
+      <div class="">
+        <h4>User List</h4>
+        <input type="text" v-model="search" placeholder="search...">
+        <!-- <div v-for="user in filterUser" class="filter"></div> -->
+      </div>
+      <div class="userInfos">
+        <User v-for="user in users" :key="user.id" :user="user"></User>
+      </div>
     </div>
-
   </div>
 </template>
 
 <script>
 import axios from 'axios';
+import User from './User'
 export default {
  name: 'Content',
-
+ components: {
+   User
+ },
   data(){
     return {
-      name: '',
-      username: '',
-      email: '',
-      phone: '',
-      website: '',
+      users: [],
+      search:''
     }
   }, 
-   mounted(){
-   axios.get('/users')
-    .then(res => {
-      console.log(res)
-      const data = res.data 
-      const users = []
-      for(let key in data) {
-        const user = data[key]
-        user.id = key
-        users.push(user)
-      }
+   created(){
+  //  get the users'list 
+    axios.get('/users')
+      .then(res => {
+        // console.log(res)      
+    const data = res.data   
+    const users = data.map(x => ({name: x.name, username: x.username, email: x.email, phone: x.phone, website: x.website}))    
       console.log(users)
-      this.email = users[0].email 
-   })
-    .catch(error => console.log(error))
- }, 
-  methods: {
-    submit(){
-
-    }
-  }
+      })
+      .catch(error => console.log(error))
+   }  
+  //  to use for the filter once I get the list 
+//  computed: {
+//    filterUser(){
+//      return this.users.filter((user)  => {
+//        return {
+//          user.name.match(this.search),
+//          user.email.match(this.search);
+//        }
+//      });
+//    }
+//  }
 }
 </script>
  
@@ -73,6 +68,9 @@ export default {
   background-color: rgb(165, 29, 29);
   color: white;
   border: 1px solid rgb(165, 29, 29);
+}
+input:focus {
+  outline: none;
 }
 
 </style>
