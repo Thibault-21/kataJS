@@ -1,9 +1,11 @@
 <template>
   <div class="main">
     <div class="content">
-      <input type="text" v-model="search" placeholder="name or email"> 
+      
+       <h3>User List</h3>
+       <input type="text" v-model="search" placeholder="name or email"> 
       <div class="userInfos">
-        <h3>User List</h3>
+       
         <ul v-for="user in usersInfos" :key="user.id"> 
           <li class="puce">{{user.name}}</li>
           <li>{{user.username}}</li>
@@ -13,16 +15,8 @@
           <ul v-for="album in usersInfos" :key="album.id">
               <li>{{album.title}}</li>
           </ul>
-          <!-- <li><button @click="showPhotos"> Photos</button></li> -->
-  <!-- <ul v-for="album in albumsList" :key="album.id">  -->
-              <!-- <li><button @click="showAlbums">Albums</button></li> -->
-  <!-- </ul> -->     
-          </ul>
-        <!-- <ul v-for="album in usersInfos" :key="album.id">
-          <li>{{album.title}}</li>
-        </ul> -->
+        </ul>
       </div>
-      
     </div>
   </div>
 </template>
@@ -52,7 +46,7 @@ export default {
           phone: x.phone, 
           website: x.website
         }))
-          // this.usersInfos = users;
+
           console.log(users);
       })
       .catch(error => console.log(error, 'user_error')),
@@ -88,7 +82,7 @@ export default {
     })
     .catch(error => console.log(error, 'photos_error'))
   },
-  //  to use for the filter once I get the list 
+
  computed: {
    filterUser(){
      return this.usersInfos.filter((user) => {
@@ -100,6 +94,26 @@ export default {
  </script>
 
 <style scoped>
+.content {
+  display: grid; 
+  grid-template-columns: 50% 50%;
+  grid-template-rows: 20% 80%;
+
+}
+input {
+  border-radius: 5px;
+  width: 20%;
+  border: 1px solid black;
+  padding: 10px;
+  height: 10%;
+}
+input::placeholder {
+  color: navy;
+}
+input:focus {
+  outline: none;
+
+}
 li {
   list-style-type: none;
 }
@@ -108,6 +122,10 @@ li {
 
 }
 .userInfos {
+  grid-column-start: 1;
+  grid-column-end: 3;
+  grid-row-start: 2;
+  grid-row-end: 3;
   display: grid; 
   grid-template-columns: 33% 33% 33%;
 }
