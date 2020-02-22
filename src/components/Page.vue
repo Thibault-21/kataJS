@@ -5,16 +5,26 @@
        <h3>User List</h3>
        <input type="text" v-model="search" placeholder="name or email"> 
       <div class="userInfos">
-       
-        <ul v-for="user in usersInfos" :key="user.id"> 
-          <li class="puce">{{user.name}}</li>
-          <li>{{user.username}}</li>
-          <li>{{user.email}}</li>
-          <li>{{user.phone}}</li>
-          <li>{{user.website}}</li>
-          <ul v-for="album in usersInfos" :key="album.id">
-              <li>{{album.title}}</li>
+       <!-- through the merge/usersInfos array -->
+        <ul v-for="user in usersInfos" :key="user.id">
+          <!-- through the users/u array -->
+          <ul v-for="u in user.usersInfos" :key="u.id"> 
+            <li class="puce">{{user.name}}</li>
+            <li>{{u.username}}</li>
+            <li>{{u.email}}</li>
+            <li>{{u.phone}}</li>
+            <li>{{u.website}}</li>
+            <li>{{u.website}}</li>
           </ul>
+          <!-- through the album array / a -->
+          <ul v-for="a in user.usersInfos" :key="a.id">
+            <li>{{a.title}}</li>
+          </ul>
+          <!-- through the photo array / p -->
+          <ul v-for="p in user.usersInfos" :key="p.id">
+            <li>{{p.thumbnailUrl}}</li>
+            <li>{{p.title}}</li>
+          </ul>  
         </ul>
       </div>
     </div>
@@ -32,6 +42,7 @@ export default {
     }
   }, 
   mounted(){
+    var merge = [];
     var users = [];
     // request users List
     axios.get('https://jsonplaceholder.typicode.com/users')
@@ -46,8 +57,9 @@ export default {
           phone: x.phone, 
           website: x.website
         }))
-
-          console.log(users);
+          merge.push(users);
+          // console.log(merge);
+          
       })
       .catch(error => console.log(error, 'user_error')),
       // request albums
@@ -59,12 +71,10 @@ export default {
         ({ 
           title: x.title 
         }))
-
-        users.push(albums);
-
+        merge.push(albums);
+        // console.log(merge);
       })
     .catch(error => console.log(error, 'albums_error')),
-
   axios.get('https://jsonplaceholder.typicode.com/users/1/photos')
     .then(response => {
       const thirdData = response.data
@@ -74,15 +84,12 @@ export default {
           thumbnailUrl: x.thumbnailUrl, 
           title: x.title
         }))
-       
-        users.push(photos);
-        this.usersInfos = users;
-        console.log(users);
-         
+        merge.push(photos);
+        this.usersInfos = merge;
+        console.log(merge);         
     })
     .catch(error => console.log(error, 'photos_error'))
   },
-
  computed: {
    filterUser(){
      return this.usersInfos.filter((user) => {
@@ -91,6 +98,58 @@ export default {
    }
  }
 }
+    /*
+    let first = 'https://jsonplaceholder.typicode.com/users';
+    let second = 'https://jsonplaceholder.typicode.com/users/1/albums';
+    let third = 'https://jsonplaceholder.typicode.com/users/1/photos';
+
+    
+    const firstRequest = axios.get(first);
+    const secondRequest = axios.get(second);
+    const thirdRequest = axios.get(third);
+
+
+    axios.all([firstRequest, secondRequest, thirdRequest])
+         .then(axios.spread((...responses) => {
+
+            const firstRequest  = responses[0];
+            // const users = firstRequest
+            //   .map(x => ({
+            //     name: x.name, 
+            //     username: x.username, 
+            //     email: x.email, 
+            //     phone: x.phone, 
+            //     website: x.website
+            //     }))
+            
+           console.log(firstRequest);
+              
+            const secondRequest = responses[1]
+            // const albums = secondRequest
+            //   .map(x => ({ 
+            //     title: x.title 
+            //     }))
+
+           console.log(secondRequest);
+
+            const thirdRequest = responses[2]
+            // const photos = thirdRequest
+            //   .map(x => ({
+            //     thumbnailUrl: x.thumbnailUrl, 
+            //     title: x.title
+            //   }))
+
+          console.log(thirdRequest);
+          // const merge = [...users, ...albums, ...photos];
+           this.usersInfos = firstRequest
+        
+        }))
+        
+        .catch(error => {
+           console.log(error, 'global_axios_error')
+         });
+  },
+*/
  </script>
 
 <style scoped>
