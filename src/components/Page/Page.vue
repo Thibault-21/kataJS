@@ -1,74 +1,52 @@
 <template>
   <div class="main">
     <div class="content">
-      
-       <h3>User List</h3>
-       <input type="text" v-model="search" placeholder="name or email"> 
+      <h3>User List</h3>
+      <input type="text" v-model="search" placeholder="name or email" />
       <div class="userInfos">
-       <!-- through the merge/usersInfos array -->
-       <ul v-for="user in usersInfos" :key="user.id">
-         <li>{{user.name}}</li>
-         <li>{{user.username}}</li>
-         <li>{{user.email}}</li>
-         <li>{{user.phone}}</li>
-         <li>{{user.website}}</li>
-
-         <button @click="getTheAlbum">View Albums</button>
-         <ul>
-            <li>{{albums.title}}</li>
-         </ul>        
-        </ul>
+        <!-- through the merge/usersInfos array -->
+        <User v-for="user in filterUser" :user="user" :key="user.id"></User>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import axios from 'axios'
+import axios from "axios";
+import User from "./pages/User";
 export default {
-  name: 'Page',
-  data(){
+  name: "Page",
+  data() {
     return {
       usersInfos: [],
-      albums: [],
-      search: ''
-    }
-  }, 
-  mounted(){
-    // request users List
-    axios.get('https://jsonplaceholder.typicode.com/users')
-      .then(usersRes => {
-        console.log(usersRes.data)
-        this.usersInfos = usersRes.data
-      })
-    axios.get('https://jsonplaceholder.typicode.com/users/1/albums')
-      .then(albumsRes => {
-        console.log(albumsRes.data)
-        this.albums = albumsRes.data
-      })
-    
+      search: "",
+    };
   },
-  methods: {
-    getTheAlbum(){
-      return this.albums.map((album) => {
-        return album.title;
-      })
-    }
+  mounted() {
+    // request users List
+    axios.get("https://jsonplaceholder.typicode.com/users").then(usersRes => {
+      // console.log(usersRes.data)
+      this.usersInfos = usersRes.data;
+    });
+  },
+  computed: {
+   filterUser(){
+     return this.usersInfos.filter((user) => {
+       return user.name.match(this.search)
+     });
+   }
+  },
+  components: {
+    User
   }
-//  computed: {
-//    filterUser(){
-//      return this.usersInfos.filter((user) => {
-//        return user.name.match(this.search)
-//        });
-}
+};
 </script>
 
 <style scoped>
 .content {
-  display: grid; 
+  display: grid;
   grid-template-columns: 50% 50%;
   grid-template-rows: 20% 80%;
-
 }
 input {
   border-radius: 5px;
@@ -82,21 +60,20 @@ input::placeholder {
 }
 input:focus {
   outline: none;
-
 }
 li {
   list-style-type: none;
+  padding: 5px;
 }
 .puce {
   list-style-type: disc;
-
 }
 .userInfos {
   grid-column-start: 1;
   grid-column-end: 3;
   grid-row-start: 2;
   grid-row-end: 3;
-  display: grid; 
+  display: grid;
   grid-template-columns: 33% 33% 33%;
 }
 </style>
