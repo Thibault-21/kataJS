@@ -6,29 +6,18 @@
        <input type="text" v-model="search" placeholder="name or email"> 
       <div class="userInfos">
        <!-- through the merge/usersInfos array -->
-          <!-- through the users/u array -->
-          <ul v-for="user in usersInfos" :key="user.id"> 
-            <li class="puce">{{user.name}}</li>
-            <li>{{user.username}}</li>
-            <li>{{user.email}}</li>
-            <li>{{user.phone}}</li>
-            <li>{{user.website}}</li>
-            <p v-show="albums">{{albums.title}}</p>
-            <p v-show="photos">{{photos.title}} {{photos.thumbnailUrl}}</p>
-            <button type="submit" @click="albums">view Album</button>
-            <button @click="getPhotos">view Photos</button>
+       <ul v-for="user in usersInfos" :key="user.id">
+         <li>{{user.name}}</li>
+         <li>{{user.username}}</li>
+         <li>{{user.email}}</li>
+         <li>{{user.phone}}</li>
+         <li>{{user.website}}</li>
 
-          </ul>
-          <!-- through the album array / a -->
-          <!-- <ul v-for="a in user.usersInfos" :key="a.id">
-            <li>{{a.title}}</li>
-          </ul> -->
-          <!-- through the photo array / p -->
-          <!-- <ul v-for="p in user.usersInfos" :key="p.id">
-            <li>{{p.thumbnailUrl}}</li>
-            <li>{{p.title}}</li>
-          </ul>   -->
-
+         <button @click="getTheAlbum">View Albums</button>
+         <ul v-show="loadAlbum">
+            <li>{{albums.title}}</li>
+         </ul>        
+        </ul>
       </div>
     </div>
   </div>
@@ -41,42 +30,37 @@ export default {
   data(){
     return {
       usersInfos: [],
+      loadAlbum: true,
       albums: [],
-      photos: [],
       search: ''
     }
   }, 
   mounted(){
     // request users List
     axios.get('https://jsonplaceholder.typicode.com/users')
-      .then(response => {
-        this.usersInfos = response.data
+      .then(usersRes => {
+        console.log(usersRes.data)
+        this.usersInfos = usersRes.data
       })
-   
+    axios.get('https://jsonplaceholder.typicode.com/users/1/albums')
+      .then(albumsRes => {
+        console.log(albumsRes.data)
+        this.albums = albumsRes.data
+      })
+    
   },
   methods: {
-    getAlbums(){
-       axios.get('https://jsonplaceholder.typicode.com/users/1/albums')
-      .then(response => {
-        this.albums = response.data
+    getTheAlbum(){
+      return this.albums.map((album) => {
+        return album.title;
       })
-
-    },
-    getPhotos(){
-       axios.get('https://jsonplaceholder.typicode.com/users/1/photos')
-      .then(response => {
-       this.photos = response.data
-      })
-
     }
-  },
- computed: {
-   filterUser(){
-     return this.usersInfos.filter((user) => {
-       return user.name.match(this.search)
-       });
-   }
- }
+  }
+//  computed: {
+//    filterUser(){
+//      return this.usersInfos.filter((user) => {
+//        return user.name.match(this.search)
+//        });
 }
 </script>
 
