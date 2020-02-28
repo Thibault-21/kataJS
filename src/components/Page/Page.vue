@@ -14,7 +14,7 @@
          <li>{{user.website}}</li>
 
          <button @click="getTheAlbum">View Albums</button>
-         <ul v-show="loadAlbum">
+         <ul>
             <li>{{albums.title}}</li>
          </ul>        
         </ul>
@@ -30,7 +30,6 @@ export default {
   data(){
     return {
       usersInfos: [],
-      loadAlbum: true,
       albums: [],
       search: ''
     }
