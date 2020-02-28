@@ -13,7 +13,7 @@
 
 <script>
 import axios from "axios";
-import User from "./pages/User";
+import User from "./userPage/User";
 export default {
   name: "Page",
   data() {
